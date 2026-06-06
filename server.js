@@ -1,5 +1,5 @@
 // ============================================================
-//  Donation API Server  —  server.js
+//  Donation API Server  —  server.js  (Aikya)
 //  POST /api/donate  →  forwards to Frappe / ERPNext endpoint
 // ============================================================
 
@@ -32,7 +32,7 @@ function parseAtgRequired(value) {
     if (typeof value === "string") {
         const v = value.trim().toLowerCase();
         if (v === "yes" || v === "true") return true;
-        if (v === "no" || v === "false") return false;
+        if (v === "no"  || v === "false") return false;
     }
     return false;
 }
@@ -52,39 +52,40 @@ app.post("/api/donate", async (req, res) => {
 
     // ---------- DYNAMIC fields (from UI / Excel) ----------
     const donor_name = body.donor_name || "";
-    const pan_no = body.pan_no || "";
-    const mobile = body.mobile || "";
-    const email = body.email || "";
-    const address = body.address || "";
-    const amount = body.amount ?? 0;
-    const seva = body.seva || "";
-    const remarks = body.remarks || "";
+    const pan_no     = body.pan_no     || "";
+    const mobile     = body.mobile     || "";
+    const email      = body.email      || "";
+    const address    = body.address    || "";
+    const amount     = body.amount     ?? 0;
+    const seva       = body.seva       || "";
+    const remarks    = body.remarks    || "";
     const atg_required = parseAtgRequired(body.atg_required);
 
-    // trust & preacher — NOW DYNAMIC (sent from UI/Excel)
-    const trust = body.trust || "None";
-    const preacher = "HKWEB";
+    // trust & preacher — DYNAMIC (sent from UI/Excel)
+    // preacher defaults to "HKWEB" for Aikya
+    const trust    = body.trust    || "None";
+    const preacher = body.preacher?.trim() || "HKWEB";
 
     // separated_address
     const sa = body.separated_address || {};
     const separated_address = {
-        type: sa.type || "None",
+        type:           sa.type           || "None",
         address_line_1: sa.address_line_1 || "None",
         address_line_2: sa.address_line_2 || "None",
-        city: sa.city || "None",
-        state: sa.state || "None",
-        country: sa.country || "None",
-        pin_code: sa.pin_code || "None",
+        city:           sa.city           || "None",
+        state:          sa.state          || "None",
+        country:        sa.country        || "None",
+        pin_code:       sa.pin_code       || "None",
     };
 
     // ---------- Build final payload ----------
     const payload = {
         donation: {
             // STATIC
-            receipt_series: STATIC.receipt_series,
-            payment_method: STATIC.payment_method,
+            receipt_series:          STATIC.receipt_series,
+            payment_method:          STATIC.payment_method,
             print_remarks_on_receipt: STATIC.print_remarks_on_receipt,
-            try_patron_tagging: STATIC.try_patron_tagging,
+            try_patron_tagging:      STATIC.try_patron_tagging,
 
             // AUTO
             donation_date: todayDate(),
@@ -135,5 +136,5 @@ app.post("/api/donate", async (req, res) => {
 // ──────────────────────────────────────────────
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`Donation server running on http://localhost:${PORT}`);
+    console.log(`Aikya Donation server running on http://localhost:${PORT}`);
 });
