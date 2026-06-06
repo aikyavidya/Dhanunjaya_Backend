@@ -63,7 +63,7 @@ app.post("/api/donate", async (req, res) => {
 
     // trust & preacher — NOW DYNAMIC (sent from UI/Excel)
     const trust = body.trust || "None";
-    const preacher = body.preacher || "None";
+    const preacher = "HKWEB";
 
     // separated_address
     const sa = body.separated_address || {};
