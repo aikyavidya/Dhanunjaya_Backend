@@ -48,6 +48,7 @@ function todayDate() {
 //  POST /api/donate
 // ──────────────────────────────────────────────
 app.post("/api/donate", async (req, res) => {
+    console.log("[/api/donate] Incoming payload:", JSON.stringify(req.body, null, 2));
     const body = req.body;
 
     // ---------- DYNAMIC fields (from UI / Excel) ----------
@@ -122,8 +123,13 @@ app.post("/api/donate", async (req, res) => {
         });
     } catch (error) {
         const errData = error.response?.data || error.message;
-        console.error("Donation API error:", errData);
-        return res.status(error.response?.status || 500).json({
+        const errStatus = error.response?.status || 500;
+        console.error("=== DONATION SYNC FAILED ===");
+        console.error("Status:", errStatus);
+        console.error("Error:", JSON.stringify(errData, null, 2));
+        console.error("Payload sent:", JSON.stringify(payload, null, 2));
+        console.error("============================");
+        return res.status(errStatus).json({
             success: false,
             message: "Failed to submit donation",
             error: errData,
